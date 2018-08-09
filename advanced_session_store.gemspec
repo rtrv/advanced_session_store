@@ -10,7 +10,8 @@ Gem::Specification.new do |spec|
 
   spec.summary      = 'Server-side session store for Rails application.'
   spec.description  = spec.summary + ' It uses Redis and handles race ' \
-                       'conditions of concurrent requests'
+                       'conditions of concurrent requests. Currently based ' \
+                       'on the redis-session-store gem'
   spec.homepage     = 'https://github.com/rtrv/advanced_session_store'
   spec.license      = 'MIT'
 
