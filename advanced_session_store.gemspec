@@ -1,10 +1,9 @@
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'advanced_session_store/version'
 
 Gem::Specification.new do |spec|
   spec.name         = 'advanced_session_store'
-  spec.version      = AdvancedSessionStore::VERSION
+  spec.version      = '0.0.1'
   spec.authors      = ['Artem Krivonozhko']
   spec.email        = ['artemkrivonozhko@gmail.com']
 
@@ -21,8 +20,8 @@ Gem::Specification.new do |spec|
   spec.files = `git ls-files -z`.split("\x0")
   spec.require_paths = ['lib']
 
-  gem.add_runtime_dependency 'redis', '~> 3'
-  gem.add_runtime_dependency 'actionpack', '>= 3', '< 5.2'
+  spec.add_runtime_dependency 'redis', '~> 3'
+  spec.add_runtime_dependency 'actionpack', '>= 3', '< 5.2'
 
   spec.add_development_dependency 'bundler', '~> 1.16'
   spec.add_development_dependency 'rake', '~> 10.0'

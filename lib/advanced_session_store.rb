@@ -1,4 +1,4 @@
-require 'advanced_session_store/version'
+require 'redis'
 
 # Rails session storage with graceful race condition handling
 # inspired by github.com/roidrage/redis-session-store
@@ -23,7 +23,6 @@ class AdvancedSessionStore < ActionDispatch::Session::AbstractStore
   # * +:on_redis_down:+ - Called with err, env, and SID on Errno::ECONNREFUSED
   # * +:on_session_load_error:+ - Called with err and SID on Marshal.load fail
   # * +:serializer:+ - Serializer to use on session data, default is :marshal.
-  # * +:handle_race_conditions:+ Boolean, saving of initial session state
   #
   # ==== Examples
   #
@@ -64,8 +63,7 @@ class AdvancedSessionStore < ActionDispatch::Session::AbstractStore
   # other reason, and session was accessed only for reading.
   def session_exists?(env)
     value = current_session_id(env)
-
-    (value && !value.empty? && redis.exists(prefixed(value))).nil?
+    !(value && !value.empty? && redis.exists(prefixed(value))).nil?
   rescue Errno::ECONNREFUSED, Redis::CannotConnectError => e
     on_redis_down.call(e, env, value) if on_redis_down
 
@@ -73,7 +71,7 @@ class AdvancedSessionStore < ActionDispatch::Session::AbstractStore
   end
 
   def verify_handlers!
-    %w[on_redis_down on_session_load_error].each do |h|
+    %w(on_redis_down on_session_load_error).each do |h|
       next unless (handler = public_send(h)) && !handler.respond_to?(:call)
 
       raise ArgumentError, "#{h} handler is not callable"
@@ -125,10 +123,12 @@ class AdvancedSessionStore < ActionDispatch::Session::AbstractStore
     if updated_session_data
       write_session_to_redis sid, expiry, updated_session_data
     end
-    return sid
+
+    sid
   rescue Errno::ECONNREFUSED, Redis::CannotConnectError => e
     on_redis_down.call(e, env, sid) if on_redis_down
-    return false
+
+    false
   end
   alias write_session set_session
 
