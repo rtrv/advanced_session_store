@@ -6,22 +6,6 @@ TODO: Delete this and the text above, and describe your gem
 
 ## Installation
 
-Add this line to your application's Gemfile:
-
-```ruby
-gem 'advanced_session_store'
-```
-
-And then execute:
-
-    $ bundle
-
-Or install it yourself as:
-
-    $ gem install advanced_session_store
-
-## Installation
-
 For Rails 3+, adding this to your `Gemfile` will do the trick.
 
 ``` ruby
