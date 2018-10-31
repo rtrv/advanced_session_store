@@ -71,7 +71,7 @@ class AdvancedSessionStore < ActionDispatch::Session::AbstractStore
   end
 
   def verify_handlers!
-    %w(on_redis_down on_session_load_error).each do |h|
+    %w[on_redis_down on_session_load_error].each do |h|
       next unless (handler = public_send(h)) && !handler.respond_to?(:call)
 
       raise ArgumentError, "#{h} handler is not callable"
@@ -106,7 +106,8 @@ class AdvancedSessionStore < ActionDispatch::Session::AbstractStore
     data = redis.get(prefixed(sid))
     begin
       data ? decode(data) : nil
-    rescue => e
+    # TODO: specify error class(es)
+    rescue StandardError => e
       destroy_session_from_sid(sid, drop: true)
       on_session_load_error.call(e, sid) if on_session_load_error
       nil
@@ -203,7 +204,7 @@ class AdvancedSessionStore < ActionDispatch::Session::AbstractStore
 
     def self.load(value)
       if needs_migration?(value)
-        Marshal.load(value)
+        Marshal.dump(value)
       else
         super
       end
