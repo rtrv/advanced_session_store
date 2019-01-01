@@ -9,7 +9,7 @@ describe AdvancedSessionStore do
     {}
   end
 
-  subject(:store) { RedisSessionStore.new(nil, options) }
+  subject(:store) { AdvancedSessionStore.new(nil, options) }
 
   let :default_options do
     store.instance_variable_get(:@default_options)
@@ -496,7 +496,7 @@ describe AdvancedSessionStore do
       end
 
       context 'when callable' do
-        let(:options) { { :"#{h}" => ->(*) { !nil } } }
+        let(:options) { { :"#{h}" => ->(*) { true } } }
 
         it 'does not explode at init' do
           expect { store }.to_not raise_error
